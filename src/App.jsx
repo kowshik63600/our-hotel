@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import Login from "./Login";
 
 const initialMenu = [
   { id: "m1", name: "Idli (2 pcs)", category: "Breakfast", price: 30 },
@@ -29,6 +30,7 @@ const nav = [
 
 export default function App() {
   const [data, setData] = useStore();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [page, setPage] = useState("Overview");
   const [toast, setToast] = useState("");
   const [search, setSearch] = useState("");
@@ -126,8 +128,11 @@ export default function App() {
   const monthPurchases = data.purchases.filter(p=>p.date?.startsWith(monthKey)).reduce((s,p)=>s+p.total,0);
   const monthExpenses = data.expenses.filter(e=>e.date?.startsWith(monthKey)).reduce((s,e)=>s+Number(e.amount),0);
 
-  return <div className="app-shell">
-    <aside className="sidebar">
+if (!isLoggedIn) {
+  return <Login onLogin={() => setIsLoggedIn(true)} />;
+}
+
+return <div className="app-shell">    <aside className="sidebar">
       <div className="brand"><div className="brand-mark">H</div><div><strong>Hotel Desk</strong><small>MANAGEMENT SYSTEM</small></div></div>
       <div className="side-label">WORKSPACE</div>
       <nav>{nav.map(([name,icon])=><button key={name} className={page===name?"nav-item active":"nav-item"} onClick={()=>setPage(name)}><span className="nav-icon">{icon}</span>{name}{name==="Billing / POS"&&<span className="nav-dot"/>}</button>)}</nav>
